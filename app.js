@@ -107,7 +107,7 @@ d3.select("#selDataset").on("change", updatePlotly)
 
 
 function updatePlotly(){
-    d3.json("../samples.json").then(function(data){
+    d3.json("samples.json").then(function(data){
         var ddmenu =d3.select("#selDataset");
         console.log(ddmenu)
         var options = ddmenu.property("value");
