@@ -2,9 +2,10 @@
   d3.json("samples.json").then(function(data)
 {   console.log(data)
 
+      // Putting the tag names into list
     var tagList= data.names;
     console.log(tagList)
-
+ // Appending list into a dropdown
     var selectTag=d3.select("#selDataset")
     tagList.forEach(tag=>{
         
@@ -15,9 +16,11 @@
     var fullList =data.samples;
         console.log(fullList)
 
-
+     // Filtering for selected option
     var flist=fullList.filter(item=> item.id==idTag)
         console.log(flist)
+
+    // Putting Items needed into a list
 
     var otuId=flist.map(item=> item.otu_ids)[0]
         console.log(otuId)
@@ -31,18 +34,22 @@
     var otulab=flist.map(item=> item.otu_labels)[0]
         console.log(otulab)
 
+    // Appending  Values to a Dictionary    
     var otuDict =[]
 
         for(var i=0; i<sampV.length; i++){
             otuDict.push({Otu_Id:tranOtuId[i],
             sample_value: sampV[i], otuLabel: otulab[i], otu_id_num:otuId[i]}) 
         }
+    // Sorting based on Value
     var sortedOtu = otuDict.sort((a, b) => 
         b.sample_value - a.sample_value)
-
+ 
+   // Slicing to the top 10
     var slicedOtu = sortedOtu.slice(0, 10)
+    // Reversing sorting order for based 
     revOtu=slicedOtu.reverse()
-
+// Bar Chart Horizontal
     var trace1={
         x:revOtu.map(item=>item.sample_value),
         y:revOtu.map(item=>item.Otu_Id),
@@ -60,6 +67,8 @@
 
     Plotly.newPlot("bar", data1, layout1);
         console.log(otuDict)
+    // Bubble Chart
+
     var trace2 = {
     
     
@@ -83,13 +92,13 @@
       };
       
     Plotly.newPlot('bubble', data2, layout2);
-
+// Selecting metadata
     var demoList =data.metadata;
         console.log(demoList)
-
+// Filtering based on Dropdown
     var dlist=demoList.filter(item=> item.id==idTag)
     var metaO=dlist[0]
-
+ // Appending info into an unordered list in the HTML
     var metaDiv=d3.select("#sample-metadata")
     var ultag=metaDiv.append("ul")
         ultag.append("li").text(`id: ${metaO.id}`)
@@ -107,22 +116,30 @@ d3.select("#selDataset").on("change", updatePlotly)
 
 
 function updatePlotly(){
+        // Accessing Data through D3
     d3.json("samples.json").then(function(data){
+        
+        // Accessing the drop down option and value
         var ddmenu =d3.select("#selDataset");
         console.log(ddmenu)
+
         var options = ddmenu.property("value");
         console.log(options)
 
-
+      // Selecting metadata
         var demoList =data.metadata;
         console.log(demoList)
-
+       // Filtering based on Dropdown
         var dlist=demoList.filter(item=> item.id==options)
         
+     // Selecting the Metadata
         var metaO=dlist[0]
         console.log(dlist)
+    // Selecting the html tag when the metadata
         var metaDiv=d3.select("#sample-metadata")
+        // Clearing Meta Data html tag
         metaDiv.html(" ")
+        // Appending info into an unordered list in the HTML
         var ultag=metaDiv.append("ul")
             ultag.append("li").text(`id: ${metaO.id}`)
             ultag.append("li").text(`ethnicity: ${metaO.ethnicity}`)
@@ -132,13 +149,15 @@ function updatePlotly(){
             ultag.append("li").text(`bbtype: ${metaO.bbtype}`)
             ultag.append("li").text(`wfreq: ${metaO.wfreq}`)
 
-            var fullList =data.samples;
+
+            // Selecting the Sample
+        var fullList =data.samples;
             console.log(fullList)
     
-    
+           // Filtering for selected option
         var flist=fullList.filter(item=> item.id==options)
             console.log(flist)
-    
+        // Putting Items needed into a list
         var otuId=flist.map(item=> item.otu_ids)[0]
             console.log(otuId)
     
@@ -151,17 +170,23 @@ function updatePlotly(){
         var otulab=flist.map(item=> item.otu_labels)[0]
             console.log(otulab)
     
+
+       // Appending  Values to a Dictionary      
         var otuDict =[]
     
             for(var i=0; i<sampV.length; i++){
                 otuDict.push({Otu_Id:tranOtuId[i],
                 sample_value: sampV[i], otuLabel: otulab[i], otu_id_num:otuId[i]}) 
             }
+         // Sorting based on Value
         var sortedOtu = otuDict.sort((a, b) => 
             b.sample_value - a.sample_value)
-    
+     // Slicing to the top 10
         var slicedOtu = sortedOtu.slice(0, 10)
+         // Reversing sorting order for based 
         revOtu=slicedOtu.reverse()
+
+         // Bar Chart Horizontal
     
         var trace1={
             x:revOtu.map(item=>item.sample_value),
@@ -175,13 +200,17 @@ function updatePlotly(){
         var layout={ tiltle: "Body Otu Diversity", 
                     xaxis:{tiltle: "Otu Level"},
                     yaxis:{tiltle: "Otu Type"}
+                    
     
         }
     
         Plotly.newPlot("bar", data1, layout)
             console.log(otuDict)
+
+         
+    // Bubble Chart
         var trace2 = {
-        
+   
         
             x: otuDict.map(ot=>ot.otu_id_num),
             y: otuDict.map(ot=>ot.sample_value),
@@ -198,7 +227,8 @@ function updatePlotly(){
           var layout2 = {
             title: 'Otu Distribution',
             showlegend: false,
-            xaxis:{title:"OTU ID"}
+            xaxis:{title:"OTU ID",
+            autosize: true}
            
           };
           
